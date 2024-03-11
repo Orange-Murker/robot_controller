@@ -1,0 +1,85 @@
+<html>
+	<body onload="connect_ws()">
+		<div>
+			<h2>Hi. This is AD4K Robot Control</h2>
+			<br />
+			<span>Connection status: </span><span id="connection-status"></span>
+			<br />
+		</div>
+
+		<div id="buttons">
+			<button id="fwd" ontouchstart="handle_down(this.id)" ontouchend="handle_up(this.id)"></button>
+			<div id="lr">
+				<button
+					id="left"
+					style="margin-right: 30%"
+					ontouchstart="handle_down(this.id)"
+					ontouchend="handle_up(this.id)"
+				></button>
+				<button
+					id="right"
+					ontouchstart="handle_down(this.id)"
+					ontouchend="handle_up(this.id)"
+				></button>
+			</div>
+			<button
+				id="back"
+				ontouchstart="handle_down(this.id)"
+				ontouchend="handle_up(this.id)"
+			></button>
+		</div>
+
+		<script>
+			const connection_status = document.getElementById("connection-status");
+
+			let ws;
+
+			function connect_ws() {
+				ws = new WebSocket("ws://192.168.71.1/ws/control");
+				ws.onopen = function (e) {
+					connection_status.innerText = "Connected";
+				};
+				ws.onclose = ws.onerror = function (e) {
+					connection_status.innerText = "Not Connected";
+				};
+				ws.onmessage = function (e) {
+					console.log(e.data);
+				};
+			}
+
+			function handle_down(id) {
+				const cmd = id + "-down";
+				console.log("Sending: " + cmd);
+				ws.send(cmd);
+			}
+
+			function handle_up(id) {
+				const cmd = id + "-up";
+				console.log("Sending: " + cmd);
+				ws.send(cmd);
+			}
+		</script>
+		<style>
+			button {
+				background-color: #04aa6d;
+				border: none;
+				margin: 10px;
+				width: 30%;
+				aspect-ratio: 1;
+			}
+
+			#buttons {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				width: 100%;
+			}
+
+			#lr {
+				display: flex;
+				justify-content: center;
+				width: 100%;
+			}
+		</style>
+	</body>
+</html>
