@@ -1,6 +1,5 @@
 mod motor;
 
-use core::convert::TryInto;
 use std::sync::{Arc, Mutex};
 
 use embedded_svc::{
@@ -53,7 +52,7 @@ fn main() -> anyhow::Result<()> {
 
     let timer_driver = Arc::new(LedcTimerDriver::new(
         peripherals.ledc.timer0,
-        &TimerConfig::default().frequency(100u32.Hz().into()),
+        &TimerConfig::default().frequency(100u32.Hz()),
     )?);
 
     let mut left_motor =
@@ -148,7 +147,7 @@ fn main() -> anyhow::Result<()> {
 
         info!("Received command {}", command);
 
-        let mut command = command.split("-");
+        let mut command = command.split('-');
 
         let mut motor_control = motor_control.lock().expect("Could not lock motor_control");
 
